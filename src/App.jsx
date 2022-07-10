@@ -12,19 +12,23 @@ function App() {
   const [modal, setModal] = useState(false);
   const [animarModal, setAnimarModal] = useState(false);
 
-  const [gastoEditar, setGastoEditar] = useState({})
+  const [gastoEditar, setGastoEditar] = useState({});
 
   useEffect(() => {
-    if(Object.keys(gastoEditar).length > 0 ) {
-      handleNuevoGasto()
-    }
+    if (Object.keys(gastoEditar).length > 0) {
+      setModal(true);
 
-  }, [gastoEditar])
+      setTimeout(() => {
+        setAnimarModal(true);
+      }, 500);
+    }
+  }, [gastoEditar]);
 
   const [gastos, setGastos] = useState([]);
 
   const handleNuevoGasto = () => {
     setModal(true);
+    setGastoEditar({});
 
     setTimeout(() => {
       setAnimarModal(true);
@@ -32,15 +36,30 @@ function App() {
   };
 
   const guardarGasto = (gasto) => {
-    gasto.id = generarId();
-    gasto.fecha = Date.now();
-    setGastos([...gastos, gasto]);
+    if (gasto.id) {
+      //Actualizar
+      const gastosActualizados = gastos.map((gastoState) =>
+        gastoState.id === gasto.id ? gasto : gastoState
+      );
+      setGastos(gastosActualizados);
+      setGastoEditar({})
+    } else {
+      //Nuevo gasto
+      gasto.id = generarId();
+      gasto.fecha = Date.now();
+      setGastos([...gastos, gasto]);
+    }
 
     setAnimarModal(false);
     setTimeout(() => {
       setModal(false);
     }, 500);
   };
+
+  const eliminarGasto = id => {
+    const gastosActualizados = gastos.filter( gasto => gasto.id !== id)
+    setGastos(gastosActualizados)
+  }
 
   return (
     <div className={modal ? "fijar" : ""}>
@@ -54,8 +73,7 @@ function App() {
       {isValidPresupuesto && (
         <>
           <main>
-            <ListadoGastos gastos={gastos}
-                  setGastoEditar={setGastoEditar} />
+            <ListadoGastos gastos={gastos} setGastoEditar={setGastoEditar} eliminarGasto={eliminarGasto}/>
           </main>
           <div className="nuevo-gasto">
             <img
@@ -69,12 +87,12 @@ function App() {
 
       {modal && (
         <Modal
-        setModal={setModal}
-        animarModal={animarModal}
-        setAnimarModal={setAnimarModal}
-        guardarGasto={guardarGasto}
-        gastoEditar={gastoEditar}
-        setGastoEditar={setGastoEditar}
+          setModal={setModal}
+          animarModal={animarModal}
+          setAnimarModal={setAnimarModal}
+          guardarGasto={guardarGasto}
+          gastoEditar={gastoEditar}
+          setGastoEditar={setGastoEditar}
         />
       )}
     </div>
