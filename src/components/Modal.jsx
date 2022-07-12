@@ -30,7 +30,7 @@ const Modal = ({
 
   const ocultarModal = () => {
     setAnimarModal(false);
-    setGastoEditar({})
+    setGastoEditar({});
     setTimeout(() => {
       setModal(false);
     }, 500);
@@ -100,7 +100,10 @@ const Modal = ({
             <option value="suscripciones">Suscripciones</option>
           </select>
         </div>
-        <input type="submit" value={gastoEditar.nombre ? "Editar Gasto" : "Añadir Gasto"} />
+        <input
+          type="submit"
+          value={gastoEditar.nombre ? "Editar Gasto" : "Añadir Gasto"}
+        />
       </form>
     </div>
   );
